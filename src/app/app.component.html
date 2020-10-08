@@ -1,12 +1,5 @@
 <div class="container">
-  <div class="heading">
-    <h1>Welcome to Camera Capture Demo!</h1>
-    <p></p>
-  </div>
-
-  <div class="content">
-    <app-camera-capture (capture)="getCapture($event)"></app-camera-capture>
-  </div>
+  <button (click)="takePicture()">Take</button>
 </div>
 
 <router-outlet></router-outlet>

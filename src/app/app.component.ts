@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Plugins, CameraResultType } from "@capacitor/core";
+
+const { Camera } = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -7,7 +10,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  public getCapture(event) {
-    console.log(event);
+  async takePicture() {
+    console.log("xcxc");
+    const image = await Camera.getPhoto({
+      resultType: CameraResultType.Uri
+    });
+    console.log(image);
   }
+  
 }
