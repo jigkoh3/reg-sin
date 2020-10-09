@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Plugins } from "@capacitor/core";
+import { CameraResultType, Plugins } from "@capacitor/core";
 import { CameraPreviewOptions } from "@capacitor-community/camera-preview"
 
-const { CameraPreview } = Plugins;
+const { CameraPreview, Camera } = Plugins;
 
 import '@capacitor-community/camera-preview';
 
@@ -15,17 +15,20 @@ export class AppComponent {
 
   async takePicture() {
     console.log("xcxc");
-    // const image = await Camera.getPhoto({
-    //   resultType: CameraResultType.Uri
-    // });
+    const image = await Camera.getPhoto({
+      resultType: CameraResultType.Uri
+    });
+    
+  }
+
+  async openCamera(){
     console.log(window.screen.width);
     console.log(window.screen.height);
     const cameraPreviewOption: CameraPreviewOptions = {
       position: "rear",
       parent: "cameraPreview",
-      className: "cameraPreview",
-      width: window.screen.width,
-      height: window.screen.height,
+      className: "camerapreview",
+      
     }
 
     CameraPreview.start(cameraPreviewOption);
