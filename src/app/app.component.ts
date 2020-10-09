@@ -16,8 +16,10 @@ export class AppComponent {
   async takePicture() {
     console.log("xcxc");
     const image = await Camera.getPhoto({
-      resultType: CameraResultType.Uri
+      resultType: CameraResultType.Base64
     });
+
+    console.log(image);
     
   }
 
