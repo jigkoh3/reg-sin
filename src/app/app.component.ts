@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CameraResultType, Plugins } from "@capacitor/core";
 import { OcrService } from './ocr.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 const { Camera } = Plugins;
 
@@ -9,12 +10,21 @@ import '@capacitor-community/camera-preview';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    // Each unique animation requires its own trigger. The first argument of the trigger function is the name
+    trigger('rotatedState', [
+      state('default', style({ transform: 'rotate(0)' })),
+      state('rotated', style({ transform: 'rotate(-90deg)' })),
+      transition('rotated => default', animate('1500ms ease-out')),
+      transition('default => rotated', animate('400ms ease-in'))
+    ])
+  ]
 })
 export class AppComponent {
   photo: any;
   cardData: any;
-
+  state: string = 'default';
   constructor(private ocr: OcrService) {
 
   }
@@ -22,11 +32,14 @@ export class AppComponent {
     this.photo = await Camera.getPhoto({
       resultType: CameraResultType.DataUrl
     });
-    
+
     let file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
+    // this.state = (this.state === 'default' ? 'rotated' : 'default');
     this.ocr.uploadFile(file).subscribe((res) => {
       this.cardData = res;
-    })
+    },(err)=>{
+      this.cardData = err;
+    });
   }
 
   dataURLtoFile(dataurl, filename) {
@@ -42,6 +55,10 @@ export class AppComponent {
     }
 
     return new File([u8arr], filename, { type: mime });
+  }
+
+  rotate() {
+    this.state = (this.state === 'default' ? 'rotated' : 'default');
   }
 
 

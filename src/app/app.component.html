@@ -1,14 +1,15 @@
 <div class="container">
   <button (click)="takePicture()">Take</button>
+  
   <div>
     <ng-template [ngIf]="photo && photo.dataUrl">
-      <img [src]="photo.dataUrl">
+      <img [@rotatedState]='state'  [src]="photo.dataUrl">
     </ng-template>
   </div>
   <div *ngIf="cardData && photo && photo.dataUrl">
     {{cardData | json}}
   </div>
-  <div *ngIf="!cardData && !photo && !photo.dataUrl">
+  <div *ngIf="photo && photo.dataUrl && !this.cardData">
     Loading Data
   </div>
 </div>
