@@ -4,21 +4,32 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CameraCaptureComponent } from './camera-capture/camera-capture.component';
+
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 import { HttpClientModule } from '@angular/common/http';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
+
 
 @NgModule({
   declarations: [
-    AppComponent,
-    CameraCaptureComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatStepperModule,
+    MatButtonModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

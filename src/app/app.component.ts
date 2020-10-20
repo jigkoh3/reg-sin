@@ -6,6 +6,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 const { Camera } = Plugins;
 
 import '@capacitor-community/camera-preview';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -23,10 +24,12 @@ import '@capacitor-community/camera-preview';
 })
 export class AppComponent {
   photo: any;
+  dataUrl: any = "./assets/frontThaiCard.jpg";
   cardData: any;
   state: string = 'default';
   file: File;
-  constructor(private ocr: OcrService) {
+  cardForm: FormGroup;
+  constructor(private formBuilder: FormBuilder,private ocr: OcrService) {
 
   }
   async takePicture() {
@@ -39,15 +42,23 @@ export class AppComponent {
     // this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
     this.compressImage(this.photo.dataUrl, 480, 640).then(compressed => {
       // console.log(compressed);
-      this.photo.dataUrl = compressed;
+      this.dataUrl = compressed;
       this.file = this.dataURLtoFile(compressed, "card.jpg");
+      if(this.state=='default'){
+        this.state = (this.state === 'default' ? 'rotated' : 'default');
+      }
+     
       this.ocr.uploadFile(this.file).subscribe((res) => {
-        this.cardData = res;
+        if(res.detection_score !== 0){
+          this.cardData = res;
+          this.cardForm = this.createCardForm();
+        }
+        
       }, (err) => {
         this.cardData = err;
       });
     })
-    // this.state = (this.state === 'default' ? 'rotated' : 'default');
+    // 
 
 
     // let blob: Blob = this.dataURItoBlob(this.photo.dataUrl);
@@ -61,6 +72,14 @@ export class AppComponent {
     // }, (err) => {
     //   this.cardData = err;
     // });
+  }
+  createCardForm() {
+    return this.formBuilder.group({
+      id_number: this.cardData.id_number,
+      th_fname: this.cardData.th_fname,
+      th_lname: this.cardData.th_lname,
+      address: this.cardData.address,
+    });
   }
 
   dataURItoBlob(dataURI) {
