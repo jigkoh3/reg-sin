@@ -33,19 +33,71 @@ export class AppComponent {
     this.photo = await Camera.getPhoto({
       resultType: CameraResultType.DataUrl,
       quality: 100,
-      width: 100,
-      height: 100,
-      correctOrientation: true
+      width: 10,
+      height: 10
     });
-   
-    this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
-    console.log(this.file);
+    // this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
+    this.compressImage(this.photo.dataUrl, 100, 100).then(compressed => {
+      // console.log(compressed);
+      this.file = this.dataURLtoFile(compressed, "card.jpg");
+      this.ocr.uploadFile(this.file).subscribe((res) => {
+        this.cardData = res;
+      }, (err) => {
+        this.cardData = err;
+      });
+    })
     // this.state = (this.state === 'default' ? 'rotated' : 'default');
-    // this.ocr.uploadFile(file).subscribe((res) => {
+
+
+    // let blob: Blob = this.dataURItoBlob(this.photo.dataUrl);
+
+
+    // // create a file
+    // this.file = new File([blob], "card.jpg");
+
+    // this.ocr.uploadFile(this.file).subscribe((res) => {
     //   this.cardData = res;
     // }, (err) => {
     //   this.cardData = err;
     // });
+  }
+
+  dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+      byteString = atob(dataURI.split(',')[1]);
+    else
+      byteString = decodeURI(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], { type: mimeString });
+  }
+
+  compressImage(src, newX, newY) {
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        const elem = document.createElement('canvas');
+        elem.width = newX;
+        elem.height = newY;
+
+        const ctx = elem.getContext('2d');
+        ctx.drawImage(img, 0, 0, newX, newY);
+        const data = ctx.canvas.toDataURL();
+        res(data);
+      }
+      img.onerror = error => rej(error);
+    })
   }
 
   dataURLtoFile(dataurl, filename) {
