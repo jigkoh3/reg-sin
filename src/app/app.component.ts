@@ -27,58 +27,98 @@ export class AppComponent {
   dataUrl: any = "./assets/frontThaiCard.jpg";
   cardData: any;
   state: string = 'default';
+  stateBack: string = 'default';
   file: File;
   cardForm: FormGroup;
-  constructor(private formBuilder: FormBuilder,private ocr: OcrService) {
+  photoBack: any;
+  backDataUrl: any = "./assets/backThaiCard.jpg";
+  fileBack: File;
+  constructor(private formBuilder: FormBuilder, private ocrService: OcrService) {
 
   }
-  async takePicture() {
+  async takeFrontCard() {
     this.photo = await Camera.getPhoto({
-      resultType: CameraResultType.DataUrl,
-      quality: 100,
-      width: 10,
-      height: 10
+      resultType: CameraResultType.DataUrl
     });
     // this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
     this.compressImage(this.photo.dataUrl, 480, 640).then(compressed => {
       // console.log(compressed);
       this.dataUrl = compressed;
       this.file = this.dataURLtoFile(compressed, "card.jpg");
-      if(this.state=='default'){
+      if (this.state == 'default') {
         this.state = (this.state === 'default' ? 'rotated' : 'default');
       }
-     
-      this.ocr.uploadFile(this.file).subscribe((res) => {
-        if(res.detection_score !== 0){
-          this.cardData = res;
-          this.cardForm = this.createCardForm();
-        }
-        
+
+
+      // this.cardData = {
+      //   id_number: '3180200336928',
+      //   th_init: 'นาย',
+      //   th_fname: 'ธีรศักดิ์',
+      //   th_lname: 'ทับฤทธิ์',
+      //   th_dob: '2 ส.ค. 2520',
+      //   th_expire: '2 ส.ค. 2565',
+      //   th_issue: '23 ส.ค. 2536',
+      //   // en_init: this.cardData.en_init,
+      //   // en_fname: this.cardData.en_fname,
+      //   // en_lname: this.cardData.en_lname,
+      //   // en_dob: this.cardData.en_dob,
+      //   // en_expire: this.cardData.en_expire,
+      //   // en_issue: this.cardData.en_issue,
+      //   address: '85/9 หมู่ที่ 5 ต.อู่ตะเภา อ.มโนรมย์ จ.ชัยนาท',
+      //   religion: 'ศาสนา พุทธ',
+      // };
+      // this.cardForm = this.createCardForm();
+
+      this.ocrService.frontCardOCR(this.file).subscribe((res) => {
+        this.cardData = res;
+        this.cardForm = this.createCardForm();
       }, (err) => {
-        this.cardData = err;
-      });
+        console.log(err)
+      })
+
     })
-    // 
 
+  }
 
-    // let blob: Blob = this.dataURItoBlob(this.photo.dataUrl);
+  async takeBackCard() {
+    this.photoBack = await Camera.getPhoto({
+      resultType: CameraResultType.DataUrl
+    });
 
+    this.compressImage(this.photoBack.dataUrl, 480, 640).then(compressed => {
+      // console.log(compressed);
+      this.backDataUrl = compressed;
+      this.fileBack = this.dataURLtoFile(compressed, "cardBack.jpg");
+      if (this.stateBack == 'default') {
+        this.stateBack = (this.stateBack === 'default' ? 'rotated' : 'default');
+      }
 
-    // // create a file
-    // this.file = new File([blob], "card.jpg");
+      // this.ocrService.backCardOCR(this.fileBack).subscribe((res) => {
+      //   console.log(res);
+      // }, (err) => {
+      //   console.log(err)
+      // })
 
-    // this.ocr.uploadFile(this.file).subscribe((res) => {
-    //   this.cardData = res;
-    // }, (err) => {
-    //   this.cardData = err;
-    // });
+    })
+
   }
   createCardForm() {
     return this.formBuilder.group({
       id_number: this.cardData.id_number,
+      th_init: this.cardData.th_init,
       th_fname: this.cardData.th_fname,
       th_lname: this.cardData.th_lname,
+      th_dob: this.cardData.th_dob,
+      th_expire: this.cardData.th_expire,
+      th_issue: this.cardData.th_issue,
+      // en_init: this.cardData.en_init,
+      // en_fname: this.cardData.en_fname,
+      // en_lname: this.cardData.en_lname,
+      // en_dob: this.cardData.en_dob,
+      // en_expire: this.cardData.en_expire,
+      // en_issue: this.cardData.en_issue,
       address: this.cardData.address,
+      religion: this.cardData.religion,
     });
   }
 
@@ -138,6 +178,10 @@ export class AppComponent {
 
   rotate() {
     this.state = (this.state === 'default' ? 'rotated' : 'default');
+  }
+
+  onFileSelected(e) {
+    console.log(e);
   }
 
 

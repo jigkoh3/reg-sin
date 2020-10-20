@@ -19,7 +19,7 @@
 <mat-vertical-stepper #stepper>
   <mat-step label="ถ่ายรูปบัตรประจำตัวประชาชน (ด้านหน้า)">
     <div>
-      <button mat-button (click)="takePicture()">
+      <button mat-button (click)="takeFrontCard()">
         <img [@rotatedState]='state' [src]="dataUrl">
         <div>
           <small>คลิ๊กเพื่อ ถ่ายรูปบัตรประชาชน (ด้านหน้า)</small>
@@ -48,36 +48,54 @@
           <input matInput formControlName="th_lname" name="th_lname">
         </mat-form-field>
       </div>
+      <div>
+        <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+          <mat-label>วันเกิด</mat-label>
+          <input matInput formControlName="th_dob" name="th_dob">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+          <mat-label>ศาสนา</mat-label>
+          <input matInput formControlName="religion" name="religion">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field class="example-full-width" appearance="outline" fxFlex>
+          <mat-label>ที่อยู่</mat-label>
+          <input matInput formControlName="address" name="address">
+        </mat-form-field>
+      </div>
       
       <!-- {{cardData | json}} oweThaiCard-->
     </form>
     <div *ngIf="cardData && photo && photo.dataUrl">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext>Next</button>
+      <button mat-raised-button color="primary" matStepperNext>ถัดไป</button>
     </div>
   </mat-step>
   <mat-step label="ถ่ายรูปบัตรประชาชน (ด้านหลัง)">
     <div>
-      <button mat-button (click)="takePicture()">
-        <img src="./assets/backThaiCard.jpg">
+      <button mat-button (click)="takeBackCard()">
+        <img [@rotatedState]='stateBack' [src]="backDataUrl">
         <p>คลิ๊กเพื่อ ถ่ายรูปบัตรประชาชน (ด้านหลัง)</p>
       </button>
     </div>
-    <div *ngIf="cardData && photo && photo.dataUrl">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext>Next</button>
+    <div *ngIf="photoBack && photoBack.dataUrl">
+      <button mat-button matStepperPrevious>ย้อนกลับ</button>
+      <button mat-raised-button color="primary" matStepperNext>ถัดไป</button>
     </div>
   </mat-step>
   <mat-step label="ถ่ายรูปหน้าตรงเจ้าของบัตร">
     <div>
-      <button mat-button (click)="takePicture()">
+      <button mat-button (click)="fileInput.click()">
         <img src="./assets/oweThaiCard.jpg">
         <p>คลิ๊กเพื่อ ถ่ายรูปหน้าตรงเจ้าของบัตร</p>
+        <input #fileInput type="file" capture="camera" accept="image/*"  style="display:none;" (change)="onFileSelected($event)" />
       </button>
     </div>
-    <div *ngIf="cardData && photo && photo.dataUrl">
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext>Next</button>
+    <div *ngIf="photoBack && photo.dataUrl">
+      <button mat-button matStepperPrevious>ย้อนกลับ</button>
+      
     </div>
   </mat-step>
 </mat-vertical-stepper>

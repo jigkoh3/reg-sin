@@ -11,7 +11,7 @@ export class OcrService {
 
   }
 
-  uploadFile(file: File): Observable<any> {
+  frontCardOCR(file: File): Observable<any> {
 
     const formData = new FormData();
     formData.append('file', file);
@@ -26,6 +26,24 @@ export class OcrService {
     );
 
     return this.http.post('https://thai-national-id.p.rapidapi.com/idocr/detect/front', formData, { headers: headers });
+
+  }
+
+  backCardOCR(file: File): Observable<any> {
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    console.log(file);
+
+    const headers = new HttpHeaders(
+      {
+        'x-rapidapi-host': 'thai-national-id.p.rapidapi.com',
+        'x-rapidapi-key': '2089a08f43mshcfd04060e143a15p1d5c29jsn6bf541903273'
+      }
+    );
+
+    return this.http.post('https://thai-national-id.p.rapidapi.com/idocr/detect/back', formData, { headers: headers });
 
   }
 }
