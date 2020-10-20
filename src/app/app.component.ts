@@ -37,8 +37,9 @@ export class AppComponent {
       height: 10
     });
     // this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
-    this.compressImage(this.photo.dataUrl, 100, 100).then(compressed => {
+    this.compressImage(this.photo.dataUrl, 480, 640).then(compressed => {
       // console.log(compressed);
+      this.photo.dataUrl = compressed;
       this.file = this.dataURLtoFile(compressed, "card.jpg");
       this.ocr.uploadFile(this.file).subscribe((res) => {
         this.cardData = res;
@@ -86,7 +87,9 @@ export class AppComponent {
     return new Promise((res, rej) => {
       const img = new Image();
       img.src = src;
-      img.onload = () => {
+      img.onload = (event) => {
+        const loadedImage: any = event.currentTarget;
+        console.log(loadedImage.width + ":" + loadedImage.height);
         const elem = document.createElement('canvas');
         elem.width = newX;
         elem.height = newY;
