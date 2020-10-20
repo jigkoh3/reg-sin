@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CameraResultType, Plugins } from "@capacitor/core";
-import { CameraPreviewOptions } from "@capacitor-community/camera-preview"
+import { OcrService } from './ocr.service';
 
-const { CameraPreview, Camera } = Plugins;
+const { Camera } = Plugins;
 
 import '@capacitor-community/camera-preview';
 
@@ -13,24 +13,36 @@ import '@capacitor-community/camera-preview';
 })
 export class AppComponent {
   photo: any;
+  cardData: any;
+
+  constructor(private ocr: OcrService) {
+
+  }
   async takePicture() {
     this.photo = await Camera.getPhoto({
       resultType: CameraResultType.DataUrl
     });
     
+    let file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
+    this.ocr.uploadFile(file).subscribe((res) => {
+      this.cardData = res;
+    })
   }
 
-  async openCamera(){
-    console.log(window.screen.width);
-    console.log(window.screen.height);
-    const cameraPreviewOption: CameraPreviewOptions = {
-      position: "rear",
-      parent: "cameraPreview",
-      className: "camerapreview",
-      
+  dataURLtoFile(dataurl, filename) {
+    console.log(dataurl);
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
     }
 
-    CameraPreview.start(cameraPreviewOption);
+    return new File([u8arr], filename, { type: mime });
   }
+
 
 }
