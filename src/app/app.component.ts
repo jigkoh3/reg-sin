@@ -25,25 +25,30 @@ export class AppComponent {
   photo: any;
   cardData: any;
   state: string = 'default';
+  file: File;
   constructor(private ocr: OcrService) {
 
   }
   async takePicture() {
     this.photo = await Camera.getPhoto({
-      resultType: CameraResultType.DataUrl
+      resultType: CameraResultType.DataUrl,
+      quality: 100,
+      width: 100,
+      height: 100,
+      correctOrientation: true
     });
-
-    let file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
+   
+    this.file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
+    console.log(this.file);
     // this.state = (this.state === 'default' ? 'rotated' : 'default');
-    this.ocr.uploadFile(file).subscribe((res) => {
-      this.cardData = res;
-    },(err)=>{
-      this.cardData = err;
-    });
+    // this.ocr.uploadFile(file).subscribe((res) => {
+    //   this.cardData = res;
+    // }, (err) => {
+    //   this.cardData = err;
+    // });
   }
 
   dataURLtoFile(dataurl, filename) {
-    console.log(dataurl);
     var arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),

@@ -6,6 +6,7 @@
       <img [@rotatedState]='state'  [src]="photo.dataUrl">
     </ng-template>
   </div>
+  {{file.size}}
   <div *ngIf="cardData && photo && photo.dataUrl">
     {{cardData | json}}
   </div>
