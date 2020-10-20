@@ -24,9 +24,9 @@ export class AppComponent {
     });
     
     let file = this.dataURLtoFile(this.photo.dataUrl, "card.jpg");
-    // this.ocr.uploadFile(file).subscribe((res) => {
-    //   this.cardData = res;
-    // })
+    this.ocr.uploadFile(file).subscribe((res) => {
+      this.cardData = res;
+    })
   }
 
   dataURLtoFile(dataurl, filename) {
