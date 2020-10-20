@@ -5,7 +5,10 @@
       <img [src]="photo.dataUrl">
     </ng-template>
   </div>
-  <div>
+  <div *ngIf="cardData && photo && photo.dataUrl">
     {{cardData | json}}
+  </div>
+  <div *ngIf="!cardData && !photo && !photo.dataUrl">
+    Loading Data
   </div>
 </div>
