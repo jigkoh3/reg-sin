@@ -12,14 +12,11 @@ import '@capacitor-community/camera-preview';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
+  photo: any;
   async takePicture() {
-    console.log("xcxc");
-    const image = await Camera.getPhoto({
-      resultType: CameraResultType.Base64
+    this.photo = await Camera.getPhoto({
+      resultType: CameraResultType.DataUrl
     });
-
-    console.log(image);
     
   }
 
